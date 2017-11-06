@@ -1,0 +1,441 @@
+{% spaceless %}
+{% load compress %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<title>{% block title %}{{ tutorial.title }} - {% if 'tutorial' not in tutorial.slug %}{{ tutorial.column.name }} - {% endif %}{% endblock title %}自强学堂</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+{% block head %}{% block seo %}
+<meta name="keywords" content="{{ tutorial.get_keywords }}">
+<meta name="description" content="{{ tutorial.get_description }}">
+<link rel='canonical' href='http://code.ziqiangxuetang.com{{ tutorial.get_absolute_url }}'>
+{% if tutorial.get_prev %}<link rel='prev' title='{{ tutorial.get_prev.title }}' href="http://code.ziqiangxuetang.com{{ tutorial.get_prev.get_absolute_url }}">{% endif %}
+{% if tutorial.get_next %}<link rel='next' title='{{ tutorial.get_next.title }}' href="http://code.ziqiangxuetang.com{{ tutorial.get_next.get_absolute_url }}">{% endif %}
+{% endblock seo %}
+
+{% compress css %}
+<link rel="stylesheet" href="/static/css/zqxt.css">
+<link rel="stylesheet" type="text/css" href="/static/css/stdtheme2.css">
+<link rel="stylesheet" type="text/css" href="/static/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
+{% endcompress %}
+
+<script src="/static/js/jquery.min.js"></script>
+
+{% block extrajs %}{% endblock %}
+{% endblock head %}
+</head>
+<body>
+<div class='w-container top'>
+<a href='http://code.ziqiangxuetang.com'><img src='/static/images/newlogo.png' alt='自强学堂' class='img-responsive'></a>
+<div class='w-right toptext w-wide'>自强学堂：学习、分享、让你更强！</div></div>
+<div class='w-topnav w-card-2 w-slim topnav' id='topnav'>
+<div style='overflow:auto;'>
+<div style='float:left;width:56%;overflow:hidden;height:40px;'>
+<a href='javascript:void(0);' class='topnav-localicons w-hide-large w-left' onclick='open_menu()' title='Menu'>&#9776;</a>
+<a href='http://code.ziqiangxuetang.com' class='topnav-icons fa fa-home w-left' title='Home'></a>
+<a href='{{ tutorial.column.get_absolute_url }}' class="active">{{ tutorial.column.name }}</a>
+<a href='/html/html-tutorial.html' class='w-hide-small' title='HTML 教程'>HTML</a>
+<a href='/css/css-tutorial.html' class='w-hide-small' title='CSS 教程'>CSS</a>
+<a href='/js/js-tutorial.html' class='w-hide-small' title='JavaScript 教程'>JAVASCRIPT</a>
+<a href='/jquery/jquery-tutorial.html' class='w-hide-small' title='jQuery 教程'>JQUERY</a>
+<a href='/sql/sql-tutorial.html' class='w-hide-small' title='SQL 教程'>SQL</a>
+<a href='/php/php-tutorial.html' class='w-hide-small' title='PHP 教程'>PHP</a>
+<a href='/bootstrap/bootstrap-tutorial.html' class='w-hide-small' title='Bootstrap 教程'>BOOTSTRAP</a>
+<a href='/angularjs/angularjs-tutorial.html' class='w-hide-small' title='Angular 教程'>ANGULAR</a>
+<a href='/xml/xml-tutorial.html' class='w-hide-small' title='XML 教程'>XML</a></div>
+<div style='float:right;width:40px;overflow:hidden;height:40px;'>
+<a href='javascript:void(0);' class='topnav-icons fa fa-search w-right' onclick='w_open_nav("search")' title='搜索 自强学堂'></a>
+</div>
+<div class='w-hide-small' style='float:right;width:37%;overflow:hidden;height:40px;'>
+<a id='topnavbtn_tutorials' href='javascript:void(0);' onclick='w_open_nav("tutorials")' title='Tutorials'>在线教程<i class='fa fa-caret-down'></i><i class='fa fa-caret-up' style='display:none'></i></a>
+<a id='topnavbtn_references' href='javascript:void(0);' onclick='w_open_nav("references")' title='References'>参考手册<i class='fa fa-caret-down'></i><i class='fa fa-caret-up' style='display:none'></i></a>
+<a id='topnavbtn_examples' href='javascript:void(0);' onclick='w_open_nav("examples")' title='Examples'>在线实例<i class='fa fa-caret-down'></i><i class='fa fa-caret-up' style='display:none'></i></a>
+</div></div>
+<div id='nav_tutorials' class='w-dropnav w-light-grey w-card-2 w-center'></div>
+<div id='nav_references' class='w-dropnav w-light-grey w-card-2 w-center'></div>
+<div id='nav_examples' class='w-dropnav w-light-grey w-card-2 w-center'></div>
+<div id='nav_search' class='w-dropnav w-light-grey w-card-2 w-center'></div></div>
+
+<div class='w-row w-light-grey' id='belowtopnav'>
+<div class='w-col l2 m12 w-slim' id='leftmenu'>
+<div id='leftmenuinner'>
+<div class='w-light-grey' id='leftmenuinnerinner'>
+<a href='javascript:void(0)' onclick='close_menu()' class='w-closebtn w-hide-large w-large' style='padding:3px 12px;'>&times;</a>
+{% block leftcolumn %}
+{% if request.user.is_superuser %}
+<a href="{% url 'admin:tutorial_column_change' tutorial.column.pk %}" target="_blank">修改栏目 {{tutorial.column.pk}}</a>
+{% endif %}
+{{ tutorial.column.intro | safe }}
+{% endblock leftcolumn %}
+<br><br>
+</div></div>&nbsp;</div>
+
+
+<div class='w-col l10 m12'>
+<div class='w-row w-white'>
+<div class='w-col l10 m12' id='main'>
+
+<div class="w-text-red">推广：
+    <a href="https://promotion.aliyun.com/ntms/act/ambassador/sharetouser.html?userCode=utfrnbw6" target="_blank">
+        阿里云产品幸运券领取，享受购买优惠！
+    </a>
+</div>
+
+{% block main %}
+<div id="main_content">
+{{ tutorial.get_title | safe }}
+{% if request.user.is_superuser %}
+<a href="{% url 'admin:tutorial_tutorial_change' tutorial.pk %}" target="_blank">修改教程{{tutorial.pk}}</a> | <a href="{% url 'admin:tutorial_tutorial_add' %}" target="_blank">新增教程</a>
+{% endif %}
+<div class="chapter">
+<div class="prev">{% if tutorial.get_prev %}<a class="chapter" href="{{ tutorial.get_prev.get_absolute_url }}" rel="prev">&laquo; {{ tutorial.get_prev.title }}</a>{% else %}这是第一篇{% endif %}</div>
+<div class="next">{% if tutorial.get_next %} <a class="chapter" href="{{ tutorial.get_next.get_absolute_url }}" rel="next">{{ tutorial.get_next.title }} &raquo;</a>{% else %}这是最后一篇{% endif %}</div>
+</div>
+{{ tutorial.content | safe }}
+</div>
+
+
+{% if tutorial.column.slug == 'django' %}
+<div class="w-center">
+<div id="cyReward" role="cylabs" data-use="reward"></div>
+</div>
+{% endif %}
+
+
+<div class="chapter">
+<div class="prev">{% if tutorial.get_prev %}<a class="chapter" href="{{ tutorial.get_prev.get_absolute_url }}" rel="prev">&laquo; {{ tutorial.get_prev.title }}</a>{% else %}这是第一篇{% endif %}</div>
+<div class="next">{% if tutorial.get_next %} <a class="chapter" href="{{ tutorial.get_next.get_absolute_url }}" rel="next">{{ tutorial.get_next.title }} &raquo;</a>{% else %}这是最后一篇{% endif %}</div>
+</div>
+
+<div id='tutorial_btm' style="margin-top:10px;xborder:1px solid;overflow:hidden;">
+{% if tutorial.column.slug == 'django' %}
+<div style="clear:both"></div>
+<div><b>服务承诺：</b>2017年03月11日到12日出现了网站不可访问，不少同学发来了邮件关心，感谢大家对自强堂Django教程的支持与厚爱。自强学堂不会关闭，我向大家承诺，我依然会坚持每天答疑，看邮件回复邮件，服务器费用已经缴纳三年，后期会努力提高服务稳定性。我也还至少会再坚持做三年，直到2020年03月12日，我愿意坚持做这件事，是因为我认为这很有意义，2015年劳动节开始写这个教程的时候，我没有想到如今，每天会有5000人来自强学堂看Django教程，我希望能帮助到更多的人。—— 2017年03月12日于北京深夜 涂伟忠</div>
+{% include "changyan.html" %}
+{% endif %}
+</div>
+{% endblock main %}
+</div>
+
+
+<div class="w-col l2 m12" id="right">
+<div class="sidesection">
+<div id="skyscraper">
+<div id="right-ad-1">
+</div>
+</div>
+</div>
+
+<div class="sidesection">
+<img src="/static/zqxt_qrcode.jpg" style="max-width: 150px;" alt="自强学堂订阅号二维码"><br>
+<span>关注微信，随时查教程，提升自己！</span>
+</div>
+
+<div class="sidesection pin_ad">
+</div>
+</div>{% comment %} right {% endcomment %}
+</div>{% comment %} w-row w-white {% endcomment %}
+
+
+
+
+<div class="footer w-container w-white">      
+<hr>
+<div style="overflow:auto">
+</div>
+
+<hr>
+<div class="w-row w-center w-small">
+<div class="w-col l2 m2 s3">
+<a href="javascript:void(0);" onclick="displayError();return false" style="white-space:nowrap;">报告错误</a>
+</div>
+<div class="w-col l2 m2 s3">
+<a href="javascript:void(0);" target="_blank" onclick="printPage();return false;">打印页面</a>
+</div>
+<div class="w-col l2 m2 s3">
+<a href="http://koubei.baidu.com/s/www.ziqiangxuetang.com" target="_blank" rel="nofollow">百度口碑</a>
+</div>
+<div class="w-col l2 m2 s3">
+<a href="/aboutus/sponsor-us.html" target="_blank" rel="nofollow">赞助我们</a>
+</div>
+<div class="w-col l2 m2 s3">
+<a href="/aboutus/disclaimer.html" target="_blank" rel="nofollow">免责声明</a>
+</div>
+<div class="w-col l2 m2 s3">
+<a href="/aboutus/index.html" target="_blank" rel="nofollow">关于我们</a>
+</div>
+</div>
+
+<hr>
+<div class="w-light-grey w-padding w-center" id="err_form" style="display:none;">
+<span onclick="this.parentElement.style.display='none'" class="w-closebtn">&times;</span>
+<h2>您的建议:</h2>
+<form>{% csrf_token %}
+<div class="w-group">      
+<label for="err_email">页面地址：</label>
+<input class="w-input" type="text" style="width:100%" id="err_url" name="err_url" disabled="disabled">
+</div>
+<div class="w-group">      
+<label for="err_email">您的邮件地址：</label>
+<input class="w-input" type="text" style="width:100%" id="err_email" name="err_email">
+</div>
+<div class="w-group">
+<label for="err_email">错误详细描述：</label>
+<textarea rows="10" class="w-input" id="err_desc" name="err_desc" style="width:100%;"></textarea>
+</div>
+<div class="form-group">        
+<button type="button" onclick="sendErr()">提交</button>
+</div>
+<br>
+</form>
+</div>
+<div class="w-container w-light-grey w-padding" id="err_sent" style="display:none;">
+<span onclick="this.parentElement.style.display='none'" class="w-closebtn">&times;</span>     
+<h2>感谢您的帮助!</h2>
+<p>您的信息已经提交到自强学堂。</p>
+</div>
+
+<hr>
+<div class="w-center w-small">
+自强学堂为提供的内容仅用于学习，测试和培训。实例可能为了更容易理解而简化。我们一直对教程，参考手册，在线实例保持修订，但是我们不能保证所有内容全部正确。通过使用本站进行学习随之而来的风险与本站无关。当使用本站时，代表您已接受了本站的使用条款和隐私条款。自强学堂是以学习和分享知识为目的，对任何法律问题及风险不承担任何责任。版权所有，保留一切权利。<br>
+
+自强学堂是用 <a href="https://www.djangoproject.com/" target="_blank" rel="nofollow">Django</a> 技术开发的站点，托管在<a href="http://www.aliyun.com/" target="_blank" rel="nofollow">阿里云</a>ECS<br><br>
+
+Copyright &copy; 2008-2017 Powered by 自强学堂 All Rights Reserved.
+{% if not request.mobile %}
+<a href="http://www.miitbeian.gov.cn/" rel="nofollow" target="_blank">吉ICP备13002477号-1</a>
+{% endif %}
+</div>
+<br><br>
+</div>{% comment %} footer {% endcomment %}
+</div>{% comment %} w-col l10 m12 {% endcomment %}
+</div>{% comment %} belowtopnav {% endcomment %}
+
+
+<div id="nav_tutorials_content" style="display:none;">
+<span onclick='w_close_nav("tutorials")' class='w-closebtn w-xlarge'>&times;</span>
+<div class='w-row-padding'>
+<div class="w-col l2 m4">
+<h3>HTML/CSS</h3>
+<a href='/html/html-tutorial.html'>HTML 教程</a>
+<a href='/html/html5-intro.html'>HTML5 教程</a>
+<a href='/css/css-tutorial.html'>CSS 教程</a>
+<a href='/css3/css3-tutorial.html'>CSS3 教程</a>
+<a href='/bootstrap/bootstrap-tutorial.html'>Bootstrap3 教程</a>
+<a href='/bootstrap/bootstrap-v2-tutorial.html'>Bootstrap2 教程</a>
+<a href="/firebug/firebug-tutorial.html">Firebug 教程</a>
+</div>
+<div class="w-col l2 m4">
+<h3>JavaScript</h3>
+<a href='/js/js-tutorial.html'>JavaScript 教程</a>
+<a href='/jquery/jquery-tutorial.html'>jQuery 教程</a>
+<a href='/jquerymobile/jquerymobile-tutorial.html'>jQuery Mobile 教程</a>
+<a href="/jqueryui/jqueryui-tutorial.html">jQuery UI 教程</a>
+<a href="/jeasyui/jqueryeasyui-tutorial.html">jQuery EasyUI 教程</a>
+<a href='/angularjs/angularjs-tutorial.html'>AngularJS 教程</a>
+<a href='/ajax/ajax-tutorial.html'>AJAX 教程</a>
+<a href='/json/json-tutorial.html'>JSON 教程</a>
+<a href="/googleapi/googleapi-tutorial.html">Google API 教程</a>
+</div>
+<div class="w-col l2 m4">
+<h3>Graphics</h3>
+<a href='/html/html5-canvas.html'>Canvas 教程</a>
+<a href='/svg/svg-tutorial.html'>SVG 教程</a>
+<a href='/googleapi/googleapi-tutorial.html'>Google Maps 教程</a>
+<h3>编程</h3>
+<a href="/cprogramming/c-tutorial.html">C语言 教程</a>
+<a href="/csharp/csharp-tutorial.html">C# 教程</a>
+<a href="/eclipse/eclipse-tutorial.html">Eclipse 教程</a>
+<a href="/java/java-tutorial.html">Java 教程</a>
+<a href="/jsp/jsp-tutorial.html">JSP 教程</a>
+<a href="/servlet/servlet-tutorial.html">Servlet 教程</a>
+<a href="/design-pattern/design-pattern-tutorial.html">设计模式</a>
+<a href="/regexp/regexp-tutorial.html">正则表达式教程</a>
+</div>
+<div class="w-col l2 m4">
+<h3>Server Side</h3>
+<a href="/linux/linux-shell.html">Linux Shell 编程</a>
+<a href="/php/php-tutorial.html">PHP 教程</a>
+<a href="/nodejs/nodejs-tutorial.html">Node.js 教程</a>
+<a href="/python/python-tutorial.html">Python 教程</a>
+<a href="/python3/python3-tutorial.html">Python3 教程</a>
+<a href="/django/django-tutorial.html">Django 教程</a>
+<a href="/ruby/ruby-tutorial.html">Ruby 教程</a>
+<a href='/asp/asp-tutorial.html'>ASP 教程</a>
+<a href='/aspnet/aspnet-tutorial.html'>ASP.NET 教程</a>
+<a href='/vbscript/vbscript-tutorial.html'>VBScript 教程</a>
+<a href='/ado/ado-tutorial.html'>ADO 教程</a>
+<a href='/appml/appml-tutorial.html'>AppML 教程</a>
+</div>
+<div class="w-col l2 m4">
+<h3>Web</h3>
+<a href="/http/http-tutorial.html">HTTP 教程</a>
+<a href="/tcpip/tcpip-tutorial.html">TCP/IP 教程</a>
+<a href='/web/web-buildingprimer.html'>网站建设</a>
+<a href='/browsers/browser-information.html'>浏览器统计</a>
+<h3>数据库</h3>
+<a href="/sql/sql-tutorial.html">SQL 教程</a>
+<a href="/sqlite/sqlite-tutorial.html">SQLite 教程</a>
+<a href="/mysql/mysql-tutorial.html">MySQL 教程</a>
+<a href="/mongodb/mongodb-tutorial.html">MongoDB 教程</a>
+<a href="/redis/redis-tutorial.html">Redis 教程</a>
+</div>
+<div class="w-col l2 m4">
+<h3>XML</h3>
+<a href="/xml/xml-tutorial.html">XML 教程</a>
+<a href="/dtd/dtd-tutorial.html">DTD 教程</a>
+<a href="/schema/schema-tutorial.html">Schema 教程</a>
+<a href="/dom/dom-tutorial.html">XML DOM 教程</a>
+<a href="/xpath/xpath-tutorial.html">XPath 教程</a>
+<a href="/xsl/xsl-tutorial.html">XSLT 教程</a>
+<a href="/xquery/xquery-tutorial.html">XQuery 教程</a>
+<a href="/xslfo/xslfo-tutorial.html">XSL-FO 教程</a>
+<a href="/soap/soap-tutorial.html">SOAP 教程</a>
+<a href="/rss/rss-tutorial.html">RSS 教程</a>
+<a href="/wsdl/wsdl-tutorial.html">WSDL 教程</a>
+</div>
+</div>
+</div>
+
+
+<div id="nav_references_content" style="display:none;">
+<span onclick='w_close_nav("references")' class='w-closebtn w-xlarge'>&times;</span>
+<div class='w-row-padding'>
+<div class="w-col l2 m4">
+<h3>HTML/CSS</h3>
+<a href='/tags/'>HTML Tag 参考</a>
+<a href='/tags/ref-eventattributes.html'>HTML Event 参考</a>
+<a href='/tags/html-colorname.html'>HTML Color 参考</a>
+<a href='/cssref/css-reference.html'>CSS 1,2,3 参考</a>
+</div>
+<div class="w-col l2 m4">
+<h3>JavaScript</h3>
+<a href='/jsref/jsref-tutorial.html'>JavaScript 参考</a>
+<a href='/jsref/jsref-tutorial.html'>HTML DOM 参考</a>
+<a href='/jquery/jquery-ref-selectors.html'>jQuery 参考</a>
+<a href='/jquerymobile/jquerymobile-ref-data.html'>jQuery Mobile 参考</a>
+<a href='/googleAPI/google-maps-ref.html'>Google Maps 参考</a>
+</div>
+<div class="w-col l2 m4">
+<h3>服务器相关</h3>
+<a href='/php/php-ref-array.html'>PHP 参考</a>
+<a href='/sql/sql-quickref.html'>SQL 参考</a>
+<a href='/asp/asp-ref-response.html'>ASP 参考</a>
+<a href='/vbscript/vbscript-ref-functions.html'>VBScript 参考</a>
+<a href='/aspnet/webpages-ref-classes.html'>Razor 参考</a>
+<a href='/aspnet/aspnet-ref-htmlcontrols.html'>ASP.NET 参考</a>
+</div>
+<div class="w-col l2 m4">
+<h3>XML</h3>
+<a href='/dom/dom-nodetype.html'>XML DOM 参考</a>
+<a href='/xsl/xsl-w3celementref.html'>XSLT 参考</a>
+<a href='/xslfo/xslfo-reference.html'>XSL-FO 参考</a>
+<a href='/xpath/xpath-functions.html'>XPath 参考</a>
+<a href='/xquery/xquery-reference.html'>XQuery 参考</a>
+<a href='/schema/schema-elements-ref.html'>Schema 参考</a>
+<a href='/rss/rss-reference.html'>RSS 参考</a>
+<a href='/svg/svg-reference.html'>SVG 参考</a>
+</div>
+<div class="w-col l2 m4">
+<h3>HTML 字符</h3>
+<a href='/charsets/'>HTML 字符集</a>
+<a href='/charsets/ref-html-ascii.html'>HTML ASCII</a>
+<a href='/charsets/ref-html-ansi.html'>HTML ANSI</a>
+<a href='/charsets/ref-html-ansi.html'>HTML Windows-1252</a>
+<a href='/charsets/ref-html-8859.html'>HTML ISO-8859-1</a>
+<a href='/charsets/ref-html-symbols.html'>HTML Symbols</a>
+<a href='/charsets/ref-html-utf8.html'>HTML UTF-8</a>
+</div>
+</div>
+</div>
+
+
+<div id="nav_examples_content" style="display:none;">
+<span onclick='w_close_nav("examples")' class='w-closebtn w-xlarge'>&times;</span>
+<div class='w-row-padding'>
+<div class="w-col l2 m4">
+<h3>HTML</h3>
+<a href='/html/html-examples.html'>HTML 实例</a>
+</div>
+<div class="w-col l2 m4">
+<h3>CSS</h3>
+<a href='/css/css-examples.html'>CSS 实例</a>
+</div>
+<div class="w-col l2 m4">
+<h3>浏览器脚本</h3>
+<a href="/js/js-examples.html">JavaScript 实例</a>
+<a href="/js/js-ex-dom.html">HTML DOM 实例</a>
+<a href="/jquery/jquery-examples.html">jQuery 实例</a>
+<a href="/jquerymobile/jquerymobile-examples.html">jQuery Mobile 实例</a>
+<a href="/angularjs/angularjs-examples.html">AngularJS 实例</a>
+<a href="/ajax/ajax-examples.html">AJAX 实例</a>
+</div>
+<div class="w-col l2 m4">
+<h3>服务器脚本</h3>
+<a href="/php/">PHP 实例</a>
+<a href="/asp/asp-examples.html">ASP 实例</a>
+<a href="/vbscript/vbscript-examples.html">VBScript 实例</a>
+<a href="/aspnet/webpages-examples.html">Razor 实例</a>
+<a href="/aspnet/aspnet-examples.html">.NET 实例</a>
+</div>
+<div class="w-col l2 m4">
+<h3>XML 语言</h3>
+<a href="/xml/xml-examples.html">XML 实例</a>
+<a href="/dtd/dtd-examples.html">DTD 实例</a>
+<a href="/dom/dom-examples.html">XML DOM 实例</a>
+<a href="/xsl/xsl-examples.html">XSL 实例</a>
+<a href="/xsl/xsl-examples.html">XSLT 实例</a>
+<a href="/xpath/xpath-examples.html">XPath 实例</a>
+<a href="/xquery/xquery-example.html">XQuery 实例</a>
+<a href="/schema/schema-example.html">Schema 实例</a>
+<a href="/soap/soap-example.html">SOAP 实例</a>
+<a href="/rss/rss-examples.html">RSS 实例</a>
+<a href="/svg/svg-examples.html">SVG 实例</a>
+</div>
+</div>
+</div>
+
+
+<div id='nav_search_content' style="display:none">
+<span onclick='w_close_nav("search")' class='w-closebtn w-xlarge'>&times;</span>
+<br><br>
+<div class='searchdiv'>
+搜索 自强学堂:
+<div id='googleSearch'>
+<div class='gcse-search'>
+<script type="text/javascript">document.write(unescape('%3Cdiv id="bdcs"%3E%3C/div%3E%3Cscript charset="utf-8" src="http://rp.baidu.com/rp3w/3w.js?sid=73600958046581005')+'&t='+(Math.ceil(new Date()/3600000))+unescape('"%3E%3C/script%3E'));</script>
+</div></div>
+</div>
+<br>
+</div>
+
+<script type="text/javascript">
+//highlight current column or tutorial
+$("#topnav a.w-hide-small[href='{{ tutorial.column.get_absolute_url }}']").hide();
+$("#leftmenuinnerinner a[href='{{ tutorial.slug }}'], #leftmenuinnerinner a[href='{{ tutorial.get_absolute_url }}']").addClass('active');
+$("#nav_tutorials_content a[href='{{ tutorial.column.get_absolute_url }}']").addClass('active');
+</script>
+
+{% compress js %}
+<script src="/static/js/jquery.pin.js"></script>
+<script src="/static/js/zqxt_footer.js"></script>
+<script src="/static/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+<script type="text/javascript">
+SyntaxHighlighter.all();
+$(".pin_ad").pin({
+    minWidth: 980
+});
+</script>
+{% endcompress js %}
+
+<!--[if lt IE 9]>
+<script src="http://apps.bdimg.com/libs/html5shiv/3.7/html5shiv.min.js"></script>
+<script src="http://apps.bdimg.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<script type="text/javascript" charset="utf-8" src="https://changyan.sohu.com/js/changyan.labs.https.js?appid=cyrKb1KWc"></script>
+{% include "baidutongji.html" %}
+</body>
+</html>
+{% endspaceless %}

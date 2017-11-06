@@ -1,0 +1,23 @@
+# list based on https://github.com/codefuze/js-mobile-tablet-redirect
+#
+
+ipad
+
+# __android__not__mobile__, is a special key, means with 'android' but without 'mobile', which is what tablets have
+# http://stackoverflow.com/questions/5341637/how-do-detect-android-tablets-in-general-useragent
+__android__not_mobile__
+
+android 3
+xoom
+sch-i800
+playbook
+tablet
+kindle
+gt-p1000
+sgh-t849
+shw-m180s
+a510
+a511
+a100
+dell streak
+silk

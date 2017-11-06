@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>{{ name }} - 在线演示 - 自强学堂</title>
+<meta id="viewport" name='viewport'>
+<script>
+(function() {
+    if ( navigator.userAgent.match(/iPad/i) ) {
+        document.getElementById('viewport').setAttribute("content", "width=device-width, initial-scale=0.9");
+    }
+}());
+</script>
+
+<link rel="stylesheet" href="/static/trycss.css">
+<!--[if lt IE 8]>
+<style>
+.textarea, .iframe {height:800px;}
+#iframeSource, #iframeResult {height:700px;}
+</style>
+<![endif]-->
+</head>
+
+<body>
+{% include "tryit_ad.html" %}
+
+<div class="container">
+  <div class="textareacontainer">
+    <div class="textarea">
+      <div class="headerText">源代码: </div>
+      <div class="iframewrapper">
+        <iframe id="iframeSource" frameborder="0" src="/demo/?name={{ name }}"></iframe>
+      </div>
+    </div>
+  </div>
+  <div class="iframecontainer">
+    <div class="iframe">
+      <div class="headerText">代码效果: </div>
+      <div class="iframewrapper">
+        <iframe id="iframeResult" frameborder="0" src="/demo/?type=result&name={{ name }}"></iframe>
+      </div>
+            <div class="footerText">代码展示 - &copy; <a href="http://www.ziqiangxuetang.com">自强学堂</a></div>      
+    </div> 
+  </div>
+</div>
+{% include "baidutongji.html" %}
+</body>
+</html>
+

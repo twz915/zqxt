@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>{{ name }} - 在线测试 - 自强学堂</title>
+<meta id="viewport" name='viewport'>
+<script>
+(function() {
+  if ( navigator.userAgent.match(/iPad/i) ) {
+      document.getElementById('viewport').setAttribute("content", "width=device-width, initial-scale=0.9");
+  }
+}());
+</script>
+<link rel="stylesheet" href="/static/trycss.css">
+<!--[if lt IE 8]>
+<style>
+.textareacontainer, .iframecontainer {width:48%;}
+.textarea, .iframe {height:800px;}
+#textareaCode, #iframeResult {height:700px;}
+.menu img {display:none;}
+</style>
+<![endif]-->
+</head>
+<body>
+{% include "tryit_ad.html" %}
+
+<div class="container">
+  <div class="textareacontainer">
+    <div class="textarea">
+      <div class="headerText" style="width:auto;float:left;">编辑下面的代码:<span style="cursor:pointer;padding-left:10px;color:green;" onclick="addCharset();">【加编码】</span></div>
+      <div class="headerBtnDiv" style="width:auto;float:right;margin-top:8px;margin-right:2.4%;">
+      {% if request.user.is_superuser %}
+      <button class="submit" type="button" onclick="document.getElementById('saveit').value='yes';submitTryit();document.getElementById('saveit').value='';">保存</button></button> 
+      {% endif %}
+      <button class="submit" type="button" onclick="submitTryit()">查看效果 &raquo;</button></div>
+      <div class="textareawrapper">
+        <div autocomplete="off" class="code_input" id="textareaCode" wrap="logical" xrows="30" xcols="50">{{ code }}</div>
+          <form autocomplete="off" style="margin:0px;display:none;" action="" method="post" target="view" id="tryitform" name="tryitform" onsubmit="validateForm();">
+            {% csrf_token %}
+            <input type="hidden" name="code" id="code" />
+            {% if request.user.is_superuser %}
+            <input type="hidden" name="name" value="{{ name }}" />
+            <input type="hidden" name="saveit" id="saveit" />
+            {% endif %}
+          </form>
+       </div>
+    </div>
+  </div>
+  <div class="iframecontainer">
+    <div class="iframe">
+      <div class="headerText resultHeader">结果:  
+      <span title="点击切换" style="cursor:pointer;" id='form_target' onclick="change_form_target();" title="点击切换">【此窗口】</span>
+      <span style="cursor:pointer;color:red;" onclick='alert("【此窗口】是指点击“查看效果”按钮后，代码效果直接显示在此页面，【新窗口】会显示在新页面。新页面中文乱码是由于没有声明编码导致的，【加编码】按钮在<head>下加一句<meta charset=\"utf-8\">来修正乱码问题")'>帮助？</span>
+      </div>
+
+      <div class="iframewrapper">
+        <iframe id="iframeResult" class="result_output" frameborder="0" name="view"></iframe>
+      </div>
+      <div class="footerText">Try it Yourself - &copy; <a href="http://www.ziqiangxuetang.com">自强学堂</a></div>      
+    </div> 
+  </div>
+</div>
+
+<script src="/static/ace/ace.js"></script>
+<script>
+var editor = ace.edit("textareaCode");
+editor.setFontSize(15);
+editor.setTheme("ace/theme/xcode");
+editor.getSession().setMode("ace/mode/html");
+
+function submitTryit() {
+document.getElementById("code").value=editor.getValue();
+document.getElementById("tryitform").action="/demo/?x=" + Math.random();
+validateForm();
+document.getElementById("iframeResult").contentWindow.name = "view";
+document.getElementById("tryitform").submit();
+}
+
+function addCharset() {
+    var t=editor.getValue();
+    var code = '<meta charset="utf-8">';
+    if (t.indexOf(code) == -1){
+      if (t.indexOf('<head>') > -1) {
+        t = t.replace('<head>','<head>\n'+code);
+      } else if (t.indexOf('<html>') > -1) {
+        t = t.replace('<html>','<html>\n<head>\n'+code+'\n</head>');
+      } else if (t.indexOf('<body>') > -1) {
+        t = '<html>\n<head>\n'+code+'\n</head>\n' + t + '</html>';
+      } else {
+        t = '<html>\n<head>\n'+code+'\n</head>\n<body>\n'+t+'\n</body>\n</html>';
+      }
+      editor.setValue(t);
+      editor.gotoLine(3);
+    }
+}
+
+function change_form_target() {
+  var tryitform = document.getElementById("tryitform");
+  var form_target = document.getElementById("form_target");
+
+  if (tryitform.target == 'view') {
+    tryitform.target = "_target";
+    form_target.innerHTML = '【新窗口】';
+  }
+  else {
+    tryitform.target = "view";
+    form_target.innerHTML = '【此窗口】';
+  }
+}
+
+function validateForm() {
+var code=document.getElementById("code").value;
+if (code.length>20000) {
+    document.getElementById("code").value="<h1>提交的代码太长！</h1>";
+    }
+}
+submitTryit();
+</script>
+
+{% include "baidutongji.html" %}
+</body>
+</html>
+
+
