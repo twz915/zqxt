@@ -1,6 +1,6 @@
 Django<1.9
 MySQL-python
-DjangoUeditor==1.8.14
+DjangoUeditor==1.8.143
 django_compressor==1.6
 django-grappelli==2.7.2
 django-redis==3.8.3
